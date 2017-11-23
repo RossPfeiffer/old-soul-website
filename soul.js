@@ -110,9 +110,6 @@ function Realm(){
 			}
 
 
-			
-
-
 			if(obj.y+obj.size >= world.H){
 				theCircle(0,-world.H);
 			}
@@ -148,7 +145,10 @@ function Realm(){
 		*/
 
 		world.souls.forEach(function(obj){
-			if( 1  ){
+			if(Math.random()>.999){
+				obj.surging = true;
+			}
+			if(1){//obj.surging){
 				
 				var strand = function(linkControlPoints){
 					
@@ -189,6 +189,14 @@ function Realm(){
 						
 						X = pyramid[j-1][0].x;
 						Y = pyramid[j-1][0].y;
+
+						if(Math.random()>.5){
+							//
+							ctx.strokeStyle = "#ee8822";
+						}else{
+							//
+							ctx.strokeStyle = "#2288ee";
+						}
 						ctx.lineTo(X ,Y );
 					};
 					//return lineList;
@@ -201,7 +209,7 @@ function Realm(){
 				
 				for(var i = 0; i< obj.strands.length; i+=1){
 					ctx.beginPath();
-					ctx.strokeStyle = "#ee8822";
+					//ctx.strokeStyle = "#ee8822";
 					ctx.lineWidth = 1;
 					//ctx.moveTo(obj.x, obj.y);
 					strand( obj.strands[i].controlPoints );
@@ -273,21 +281,47 @@ function Realm(){
 		this.ySpeed += speed;
 		/*###TODO: recalc other vars*/
 	}
-	this.O.prototype.move = function(){
+	this.O.prototype.move = function(){	
 		this.shiftPos( this.xSpeed, this.ySpeed);
 		var W = world.W;
 		var H = world.H;
-		if (this.x >= W){
-			this.x -= W;
+		var loopable = true;
+		if(this.type===STRANDCP && this.owner.loopLocked){
+			loopable = false;
 		}
-		if (this.x < 0){
-			this.x += W;
+		if(this.type===SOUL && this.loopLocked){
+			loopable = false;
 		}
-		if (this.y >= H){
-			this.y -= H;
-		}
-		if (this.y < 0){
-			this.y += H;
+		if(!loopable){
+			if (this.x >= W){
+				this.x -= W;
+			}
+			if (this.x < 0){
+				this.x += W;
+			}
+			if (this.y >= H){
+				this.y -= H;
+			}
+			if (this.y < 0){
+				this.y += H;
+			}
+		}else{
+			if (this.x >= W){
+				this.x = W-1;
+				this.setXSpeed(-this.xSpeed);
+			}
+			if (this.x < 0){
+				this.x = 0;
+				this.setXSpeed(-this.xSpeed);
+			}
+			if (this.y >= H){
+				this.y = H-1;
+				this.setYSpeed(-this.ySpeed);
+			}
+			if (this.y < 0){
+				this.y = 0;
+				this.setYSpeed(-this.ySpeed);
+			}
 		}
 		this.shiftSpeed( -world.friction );
 		this.collisionFieldAssociate();
@@ -298,8 +332,13 @@ function Realm(){
 	}
 	this.O.prototype.alignish = function(){
 		var targetX,targetY;
-		var yank = 0.01;
-		var maxSpeed = 3;//yeah. i should use sin and cos shit. but whatever for now
+		var yank = .1;
+		var maxSpeed = 25;//yeah. i should use sin and cos shit. but whatever for now
+		if(Math.random()>.995){
+			this.txOffset = jitter(300);
+			this.tyOffset = jitter(300);
+		}
+
 		targetX = ( this.owner.soulBound.x - this.owner.x ) * this.hoverAround + this.owner.x;
 		targetX += this.txOffset;
 		this.shiftXSpeed( (targetX - this.x)*yank );
@@ -307,7 +346,7 @@ function Realm(){
 			this.setXSpeed(maxSpeed);
 		}else if (this.xSpeed<-maxSpeed){
 			this.setXSpeed(-maxSpeed);
-		}
+		}/**/
 		targetY = ( this.owner.soulBound.y - this.owner.y ) * this.hoverAround + this.owner.y;
 		targetY += this.tyOffset;
 		this.shiftYSpeed( (targetY - this.y)*yank );
@@ -315,7 +354,14 @@ function Realm(){
 			this.setYSpeed(maxSpeed);
 		}else if (this.ySpeed<-maxSpeed){
 			this.setYSpeed(-maxSpeed);
+		}/**/
+		//this should help the control points "snap" in... 
+		var d = Math.sqrt( Math.pow(this.x - targetX,2) + Math.pow(this.y - targetY,2) );
+		if (d<50){
+			this.setXSpeed(this.xSpeed*.990);
+			this.setYSpeed(this.ySpeed*.990);
 		}
+		
 	}
 	
 
@@ -474,18 +520,27 @@ Realm.prototype.createSoul = function(x,y){
 	o.type = SOUL;
 	o.setYSpeed( jitter(5) );
 	o.setXSpeed( jitter(5) );
-	var strandControlPoint,strandPoints,strandCount = getRandomInt(1,4);
+	o.surging = false;
+	o.discharged = 0;
+	var strandControlPoint,strandPoints,strandCount = getRandomInt(4,13);
 	o.strands = [];
+	o.loopLocked = false;
 	for(var strand,j,i=0; i<strandCount; i+=1){
-		strandPoints = getRandomInt(1,4);
-		o.strands[i]={surgeSpeed:getRandomInt(0,15)/100,controlPoints:[]};
+		strandPoints = getRandomInt(5,10);
+		o.strands[i]={
+			surgeSpeed:getRandomInt(1,15)/100,
+			surgeDistance:0,//0.0 - 1.0
+			surgeTimeOffset:getRandomInt(0,400),
+			surgeCountdown:0,
+			controlPoints:[]
+		};
 		strand = o.strands[i];
 		for(j=0; j<strandPoints; j+=1){
 			strandControlPoint = this.createStrandControlPoint(x+jitter(50),y+jitter(50));
 			strandControlPoint.hoverAround = getRandomInt(0,100)/100;
 			strandControlPoint.owner = o;
-			strandControlPoint.txOffset = jitter(100);
-			strandControlPoint.tyOffset = jitter(100);
+			strandControlPoint.tyOffset = jitter(300);
+			strandControlPoint.txOffset = jitter(300);
 			strand.controlPoints.push(strandControlPoint);
 		}
 	}
@@ -586,7 +641,7 @@ function configureInitialState(lab){
 		var decoder = new realm.Decoder();
 		//var originParticle = realm.createSoul(50-1,150,decoder);
 		//originParticle.tracking = 1;
-		repeat(22,function(i){
+		repeat(3,function(i){
 			realm.createSoul(Math.random()*$.W,Math.random()*$.H);
 		});
 		realm.souls.forEach(function(soul){soul.newSoulBound();})
