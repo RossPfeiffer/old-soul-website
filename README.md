@@ -1,3 +1,3 @@
-#Soulecule.com  
+# Soulecule.com  
 Creating the background animation and an open letter for transparency.  
 Most of these files are scrap  
