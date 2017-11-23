@@ -170,7 +170,7 @@ function Realm(){
 					}
 
 					var resolution = 100;
-					var k,X,Y;
+					var k,X,Y,prevX,prevY;
 					
 					
 
@@ -190,14 +190,23 @@ function Realm(){
 						X = pyramid[j-1][0].x;
 						Y = pyramid[j-1][0].y;
 
-						if(Math.random()>.5){
-							//
-							ctx.strokeStyle = "#ee8822";
-						}else{
-							//
-							ctx.strokeStyle = "#2288ee";
+						if(i>0){
+							ctx.beginPath();
+							ctx.lineWidth = 1;
+							ctx.moveTo(prevX,prevY);
+							if(Math.random()>.5){
+								//
+								ctx.strokeStyle = "#ee8822";
+							}else{
+								//
+								ctx.strokeStyle = "#2288ee";
+							}
+							ctx.lineTo(X ,Y );	
+							ctx.stroke();
 						}
-						ctx.lineTo(X ,Y );
+
+						prevX = X;
+						prevY = Y;
 					};
 					//return lineList;
 				}
@@ -208,13 +217,13 @@ function Realm(){
 				//ctx.lineWidth = 3;
 				
 				for(var i = 0; i< obj.strands.length; i+=1){
-					ctx.beginPath();
+					//ctx.beginPath();
 					//ctx.strokeStyle = "#ee8822";
-					ctx.lineWidth = 1;
+					
 					//ctx.moveTo(obj.x, obj.y);
 					strand( obj.strands[i].controlPoints );
 					//yox(ll);
-					ctx.stroke();
+					//x
 				}
 				/*ctx.beginPath();
 				ctx.strokeStyle = "#ee8822";
