@@ -1,0 +1,128 @@
+<html>
+	<head></head>
+	<body>
+		<canvas id="can" width="500" height="500"></canvas>
+		<script>
+		var canvas = document.getElementById("can");
+		var ctx = canvas.getContext("2d");
+		function f(x,i){
+			if(x!=NaN){
+				return Math.tan(x,i)/(Math.pow(x,Math.PI));
+			}
+			return null;
+		}
+		function write(x){document.write(x);}
+		function bar(x){
+			for(var i; i<=x*100;i+=1){
+				write('#');
+			}
+		}
+		/*
+		NOTES
+		
+		Code
+			CreateNeuro[]
+				Connections
+				Orientation
+				Type
+					Simple
+					Edit
+					Sense
+						Code Sensor
+						Dot Sensor
+					If 
+						>
+						<
+						==
+						<=
+						>=
+						!=
+					Math
+						Multiply
+						Add
+						Subtract
+						Divide
+						nth Root
+						Log
+						Tau normalized cos
+						Tau normalized sin
+						Tau normalized tan
+						Tau normalized arccos
+						Tau normalized arcsin
+						Tau normalized arctan
+						Set
+						Set to time
+					Dot Creator
+						>Hardset layer and type combos
+						>Code copied
+							mark size
+							series for pattern
+						_Investement * Layer's nodes
+			Up Neuro
+			Down Neuro
+			To Neuro
+			Set Neuro as Arg
+			//
+			Set ArgReffSeries to current series
+			//
+			New Series
+			Up Series
+			Down Series
+			Remove Series
+			//
+			New SeriesVar
+			Up SeriesVar
+			Down SeriesVar
+			Remove SeriesVar
+			SeriesVar++
+			SeriesVar--
+			//
+			Jump To & If Jump (match next X# of characters)
+			Set Time As Arg
+
+		Particles
+			Friction
+			Death
+				||breakdown
+				||pure energy
+			energy tick consumption
+			Field Ring[]
+				&amp
+				&range
+				&node
+				&type
+				&formation triggers[]
+					&pre-requisites
+						&nodes to fill
+						&type to fill with (uniform || not)
+						HANDLE
+							||consume into code into others
+							||or others into self
+			
+		Field
+			push & pull spans
+			import & export source from spans
+			radiation
+
+		*/
+		//
+
+		/*
+		ctx.beginPath()
+		ctx.moveTo(0, f(0) );
+		var finalX,jump = false;
+		for(var x = 0; x <= 1; x+=0.001){
+			finalX = f(x);
+			if(finalX === null){
+				jump = true;
+			}else{
+				if(jump)
+					ctx.moveTo(x*500, 500-finalX*500 );
+				ctx.lineTo(x*500,500-finalX*500);	
+				jump = false;
+			}
+		}
+		ctx.stroke();*/
+		</script>
+	</body>
+</html>
