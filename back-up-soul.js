@@ -24,12 +24,12 @@ var $ = {
 	linkerSize:50,
 	particles:80,
 	gapBrushes:0,
-	soulSpark:.99994,
+	soulSpark:.9999,
 	drawGrid:0,
 	colors:{
 		soulgush:"233,223,255",
 		soulmesh:"243,243,255",
-		background: "0,0,0"
+		background: "46,11,46"
 	}
 }
 
@@ -629,7 +629,6 @@ Realm.prototype.tick = function(){
 		
 	});
 	this.souls.forEach(function(soul){	
-		soul.lastCC =soul.connections.length + 1;
 		soul.connections=[];
 		soul.size = soul.sheen + $.soulSize;
 	});
@@ -686,12 +685,12 @@ Realm.prototype.tick = function(){
 										if(d<=sS*.9){
 											if(d<sS*.37){
 
-												if(d<sS*(.1*push)){
-													soul.shiftXSpeed ( (   (soul.x+ XX*world.W) -linker.x    )/d*(9/push) );
-													soul.shiftYSpeed ( (   (soul.y+ YY*world.H) -linker.y    )/d*(9/push) );	
+												if(d<sS*.1){
+													soul.shiftXSpeed ( (   (soul.x+ XX*world.W) -linker.x    )/d*(4/push) );
+													soul.shiftYSpeed ( (   (soul.y+ YY*world.H) -linker.y    )/d*(4/push) );	
 												}else{
-													soul.shiftXSpeed ( (   (soul.x+ XX*world.W) -linker.x    )/d*(1/push*(soul.lastCC/5)  ) );
-													soul.shiftYSpeed ( (   (soul.y+ YY*world.H) -linker.y    )/d*(1/push*(soul.lastCC/5)  ) );		
+													soul.shiftXSpeed ( (   (soul.x+ XX*world.W) -linker.x    )/d*(1.5/push) );
+													soul.shiftYSpeed ( (   (soul.y+ YY*world.H) -linker.y    )/d*(1.5/push) );		
 												}
 													
 											}else{
@@ -808,7 +807,6 @@ Realm.prototype.createSoul = function(x,y){
 	o.linker = this.createLinker(x,y);
 	o.linker.owner = o;
 	o.connections = [];
-	o.lastCC= 1;
 ;	return o;
 }
 function jitter(x){
@@ -888,11 +886,13 @@ function evalCreatureDistance(){/*BS*/}
 var SimEval = component(DIV,"simulation",function(evaluationFunction){
 	this.evalFun = evaluationFunction;
 	var _ = this._;
-	//var launchButton = c(BUTTON,"","Launch");
-	//var menu = c(DIV,"menu-bar",[launchButton]);
-	//_.a(menu);
+	var launchButton = c(BUTTON,"","Launch");
+	var menu = c(DIV,"menu-bar",[launchButton]);
+	_.a(menu);
 	var _this = this;
-	_this.launch();
+	launchButton.clkOnce(function(){
+		_this.launch();
+	});
 },{
 	processEvolRun : function(){
 		//
@@ -930,9 +930,6 @@ function configureInitialState(lab){
 
 
 (function(){
-	$.W =window.innerWidth;
-	$.particles = Math.sqrt($.W * $.H) /7;
-	yox($.particles);
 	simulation = new SimEval(evalCreatureDistance);
-	byID("simulation-display").a(simulation);
+	BODY.a(simulation);
 })();
